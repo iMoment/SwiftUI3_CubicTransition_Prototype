@@ -24,6 +24,8 @@ struct CubicTransition<Content: View, Detail: View>: View {
     @State var animateView: Bool = false
     @State var showView: Bool = false
     
+    @State var task: DispatchWorkItem?
+    
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
@@ -52,12 +54,16 @@ struct CubicTransition<Content: View, Detail: View>: View {
             .offset(x: animateView ? -size.width : 0)
         }
         .onChange(of: show) { newValue in
+            task?.cancel()
             // Show view before animation starts
             if show {
                 showView = true
             } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                task = .init {
                     showView = false
+                }
+                if let task = task {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: task)
                 }
             }
             

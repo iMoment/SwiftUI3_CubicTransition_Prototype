@@ -50,7 +50,7 @@ struct HomeView: View {
             HStack(spacing: 12) {
                 if show {
                     Button {
-                        show.toggle()
+                        
                     } label: {
                         Image(systemName: "arrow.left")
                             .font(.title2)
@@ -67,6 +67,9 @@ struct HomeView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(.ultraThinMaterial)
             .environment(\.colorScheme, .dark)
+        }
+        .onTapGesture {
+            show.toggle()
         }
     }
 }
