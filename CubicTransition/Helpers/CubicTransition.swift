@@ -34,11 +34,35 @@ struct CubicTransition<Content: View, Detail: View>: View {
                 
                 // Rotate current view when detail view is pushing
                     .rotation3DEffect(.init(degrees: animateView ? -85 : 0), axis: (x: 0, y: 1, z: 0), anchor: .trailing, anchorZ: 0, perspective: 1)
+                
+                // MARK: Displaying Detail View
+                ZStack {
+                    if showView {
+                        detail
+                            .frame(width: size.width, height: size.height)
+                            .transition(.move(edge: .trailing))
+                            .onDisappear {
+                                print("Closed")
+                            }
+                    }
+                }
+                .rotation3DEffect(.init(degrees: animateView ? 0 : 85), axis: (x: 0, y: 1, z: 0), anchor: .leading, anchorZ: 0, perspective: 1)
             }
             // Apply offset
-            
+            .offset(x: animateView ? -size.width : 0)
         }
         .onChange(of: show) { newValue in
+            // Show view before animation starts
+            if show {
+                showView = true
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    showView = false
+                }
+            }
+            
+            // View not removed; will create memory issues
+            
             // Using separate variable instead of show since it will be removed as soon as it is set to false; animation will not be completed
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 withAnimation(.easeInOut(duration: 0.35)) {

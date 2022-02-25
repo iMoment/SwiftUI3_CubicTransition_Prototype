@@ -48,7 +48,17 @@ struct HomeView: View {
         .ignoresSafeArea()
         .overlay(alignment: .top) {
             HStack(spacing: 12) {
-                Text("Cubic Transition")
+                if show {
+                    Button {
+                        show.toggle()
+                    } label: {
+                        Image(systemName: "arrow.left")
+                            .font(.title2)
+                            .foregroundColor(Color.white)
+                    }
+                }
+                
+                Text(show ? "Back" : "Cubic Transition")
                     .font(.title.bold())
                     .foregroundColor(Color.white)
             }
